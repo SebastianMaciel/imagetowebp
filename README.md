@@ -1,46 +1,40 @@
-# PNG a WebP - Convertidor de Imágenes
+# PNG to WebP - Image Converter
 
-Una herramienta web simple y moderna para convertir imágenes PNG a formato WebP con un solo clic.
+A simple and modern web tool to convert PNG images to WebP format with a single click.
 
-## 🚀 Características
+## 🚀 Features
 
-- **Conversión rápida**: Convierte PNG a WebP con calidad optimizada (80%)
-- **Vista previa**: Muestra una thumbnail de la imagen PNG antes de convertir
-- **Metadata completa**: Información detallada del archivo (nombre, peso, dimensiones)
-- **Gestión de archivos**: Ocultar input cuando hay imagen seleccionada y botón para eliminar
-- **Interfaz limpia**: Ocultar input de archivo después de la conversión para enfocar en el resultado
-- **Comparación de tamaños**: Muestra la reducción de tamaño después de la conversión
-- **Vista previa del resultado**: Muestra la imagen WebP convertida antes de descargar
-- **Botones de acción duales**: Descarga y opción para convertir otra imagen
-- **Interfaz moderna**: Diseño minimalista con modo oscuro por defecto
-- **Procesamiento local**: Todo el procesamiento ocurre en el servidor, sin dependencias externas
-- **Descarga directa**: Descarga automática del archivo convertido
-- **Validación de archivos**: Solo acepta archivos PNG válidos
-- **Responsive**: Funciona perfectamente en dispositivos móviles y desktop
+- **Quick conversion**: Converts PNG to WebP with optimized quality (80%)
+- **Preview**: Shows a thumbnail of the PNG image before converting
+- **Size comparison**: Shows the size reduction after conversion
+- **Dual action buttons**: Download and option to convert another image
+- **Modern interface**: Minimalist design with dark mode by default
+- **Local processing**: All processing occurs on the server, without external dependencies
+- **Responsive**: Works perfectly on mobile and desktop devices
 
-## 🛠️ Tecnologías
+## 🛠️ Technologies
 
 - **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes
-- **Procesamiento de imágenes**: Sharp
-- **Gestión de paquetes**: pnpm
+- **Image processing**: Sharp
+- **Package management**: pnpm
 
-## 📦 Instalación
+## 📦 Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 
 ```bash
-git clone <url-del-repositorio>
+git clone <repository-url>
 cd imgtowebp
 ```
 
-2. Instala las dependencias:
+2. Install the dependencies:
 
 ```bash
 pnpm install
 ```
 
-3. Ejecuta el servidor de desarrollo:
+3. Run the development server:
 
 ```bash
 pnpm dev
