@@ -20,6 +20,9 @@ interface FileWithMetadata {
 }
 
 const MAX_FILES = 10;
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB
+const MIN_FILE_SIZE = 1024; // 1 KB
+const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100 MB
 
 export function useMultipleFiles() {
   const [files, setFiles] = useState<FileWithMetadata[]>([]);
@@ -27,10 +30,92 @@ export function useMultipleFiles() {
 
   const addFiles = useCallback(
     (newFiles: File[]) => {
+      // Filter valid image types and check file sizes
       const validFiles = newFiles.filter((file) => {
         const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-        return validImageTypes.includes(file.type);
+        const isValidType = validImageTypes.includes(file.type);
+        const isValidSize =
+          file.size >= MIN_FILE_SIZE && file.size <= MAX_FILE_SIZE;
+
+        if (!isValidType) {
+          console.warn(`Skipping ${file.name}: Invalid file type`);
+        }
+        if (!isValidSize) {
+          console.warn(
+            `Skipping ${file.name}: File size ${(
+              file.size /
+              1024 /
+              1024
+            ).toFixed(2)}MB is outside allowed range`
+          );
+        }
+
+        return isValidType && isValidSize;
       });
+
+      // Check total size limit
+      const currentTotalSize = files.reduce((sum, f) => sum + f.file.size, 0);
+      const newFilesTotalSize = validFiles.reduce((sum, f) => sum + f.size, 0);
+
+      if (currentTotalSize + newFilesTotalSize > MAX_TOTAL_SIZE) {
+        const availableSize = MAX_TOTAL_SIZE - currentTotalSize;
+        const filesToAdd = [];
+        let accumulatedSize = 0;
+
+        for (const file of validFiles) {
+          if (accumulatedSize + file.size <= availableSize) {
+            filesToAdd.push(file);
+            accumulatedSize += file.size;
+          } else {
+            break;
+          }
+        }
+
+        const excessCount = validFiles.length - filesToAdd.length;
+
+        if (filesToAdd.length === 0) {
+          return {
+            success: false,
+            message: `Total file size would exceed ${(
+              MAX_TOTAL_SIZE /
+              1024 /
+              1024
+            ).toFixed(0)}MB limit. Please remove some files first.`,
+            excess: validFiles.length,
+            added: 0,
+          };
+        }
+
+        const filesWithMetadata: FileWithMetadata[] = filesToAdd.map(
+          (file) => ({
+            file,
+            id: Math.random().toString(36).substr(2, 9),
+            previewUrl: URL.createObjectURL(file),
+            metadata: null,
+            estimatedWebPSize: null,
+            isAnalyzing: false,
+            isConverting: false,
+            convertedUrl: null,
+            convertedSize: null,
+            error: null,
+          })
+        );
+
+        setFiles((prev) => [...prev, ...filesWithMetadata]);
+
+        // Procesar metadata y estimación de tamaño para cada archivo
+        filesWithMetadata.forEach((fileWithMeta) => {
+          processFileMetadata(fileWithMeta);
+        });
+
+        const message = `Added ${filesToAdd.length} files. ${excessCount} files were skipped due to size limits.`;
+        return {
+          success: false,
+          message,
+          excess: excessCount,
+          added: filesToAdd.length,
+        };
+      }
 
       if (files.length + validFiles.length > MAX_FILES) {
         // Calcular cuántos archivos podemos agregar
@@ -308,6 +393,58 @@ export function useMultipleFiles() {
     });
   }, [files]);
 
+  const downloadAllAsZip = useCallback(async () => {
+    const convertedFiles = files.filter((f) => f.convertedUrl);
+    if (convertedFiles.length === 0) return;
+
+    try {
+      // Prepare file data for the API
+      const filesData = convertedFiles.map((fileWithMeta) => {
+        const baseName = fileWithMeta.file.name.replace(
+          /\.(png|jpg|jpeg)$/i,
+          ''
+        );
+        const fileName = `${baseName}.webp`;
+
+        return {
+          name: fileName,
+          url: fileWithMeta.convertedUrl!,
+        };
+      });
+
+      // Call the API to create and download the ZIP
+      const response = await fetch('/api/download-zip', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ files: filesData }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create ZIP file');
+      }
+
+      // Get the ZIP blob and download it
+      const zipBlob = await response.blob();
+      const url = URL.createObjectURL(zipBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'converted-images.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the URL
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error creating ZIP file:', error);
+      throw new Error('Failed to create ZIP file');
+    }
+  }, [files]);
+
   return {
     files,
     addFiles,
@@ -317,6 +454,7 @@ export function useMultipleFiles() {
     clearAllFiles,
     downloadFile,
     downloadAll,
+    downloadAllAsZip,
     isConvertingAll,
     canConvertAll: files.some(
       (f) => !f.convertedUrl && !f.error && !f.isAnalyzing

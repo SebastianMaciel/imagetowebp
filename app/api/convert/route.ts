@@ -10,6 +10,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    // File size limits
+    const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB
+    const MIN_FILE_SIZE = 1024; // 1 KB
+
+    if (file.size < MIN_FILE_SIZE) {
+      return NextResponse.json(
+        { error: 'File is too small (minimum 1 KB)' },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        {
+          error: `File is too large (maximum ${(
+            MAX_FILE_SIZE /
+            1024 /
+            1024
+          ).toFixed(0)} MB)`,
+        },
+        { status: 400 }
+      );
+    }
+
     // Verificar que sea un archivo de imagen válido (PNG, JPG, JPEG)
     const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     if (!validImageTypes.includes(file.type)) {

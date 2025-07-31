@@ -142,7 +142,7 @@ export default function Toast({
         </div>
         <button
           onClick={handleClose}
-          className='flex-shrink-0 ml-3 p-1 rounded-lg hover:bg-white/10 transition-colors duration-200'
+          className='flex-shrink-0 ml-3 p-1 rounded-lg hover:bg-white/10 transition-colors duration-200 cursor-pointer'
         >
           <svg
             className='w-4 h-4'

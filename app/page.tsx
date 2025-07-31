@@ -15,6 +15,7 @@ export default function Home() {
     clearAllFiles,
     downloadFile,
     downloadAll,
+    downloadAllAsZip,
     isConvertingAll,
     canConvertAll,
     allConverted,
@@ -98,6 +99,15 @@ export default function Home() {
     showToast('Download started for all images', 'success');
   };
 
+  const handleDownloadAllAsZip = async () => {
+    try {
+      await downloadAllAsZip();
+      showToast('ZIP download started successfully', 'success');
+    } catch (error) {
+      showToast('Failed to create ZIP file', 'error');
+    }
+  };
+
   const handleClearAll = () => {
     clearAllFiles();
     showToast('All images have been removed', 'info');
@@ -173,7 +183,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={handleClearAll}
-                  className='px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300'
+                  className='px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300 cursor-pointer'
                 >
                   Clear all
                 </button>
@@ -282,7 +292,7 @@ export default function Home() {
                       <button
                         onClick={handleConvertAll}
                         disabled={isConvertingAll}
-                        className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg'
+                        className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg cursor-pointer'
                       >
                         {isConvertingAll ? (
                           <>
@@ -329,25 +339,46 @@ export default function Home() {
                       </button>
                     )}
                     {allConverted && (
-                      <button
-                        onClick={handleDownloadAll}
-                        className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg'
-                      >
-                        <svg
-                          className='w-5 h-5 mr-2'
-                          fill='none'
-                          stroke='currentColor'
-                          viewBox='0 0 24 24'
+                      <div className='flex items-center space-x-3'>
+                        <button
+                          onClick={handleDownloadAll}
+                          className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer'
                         >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth={2}
-                            d='M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
-                          />
-                        </svg>
-                        Download all
-                      </button>
+                          <svg
+                            className='w-5 h-5 mr-2'
+                            fill='none'
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth={2}
+                              d='M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
+                            />
+                          </svg>
+                          Download all
+                        </button>
+                        <button
+                          onClick={handleDownloadAllAsZip}
+                          className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer'
+                        >
+                          <svg
+                            className='w-5 h-5 mr-2'
+                            fill='none'
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth={2}
+                              d='M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z'
+                            />
+                          </svg>
+                          Download as ZIP
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -379,7 +410,7 @@ export default function Home() {
                       </div>
                       <button
                         onClick={() => removeFile(fileWithMeta.id)}
-                        className='flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300'
+                        className='flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300 cursor-pointer'
                         title='Remove file'
                       >
                         <svg
@@ -557,7 +588,7 @@ export default function Home() {
                             fileWithMeta.isConverting ||
                             fileWithMeta.isAnalyzing
                           }
-                          className='w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg text-sm'
+                          className='w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg text-sm cursor-pointer'
                         >
                           {fileWithMeta.isConverting ? (
                             <>
@@ -631,7 +662,7 @@ export default function Home() {
                       {fileWithMeta.convertedUrl && (
                         <button
                           onClick={() => downloadFile(fileWithMeta.id)}
-                          className='w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm'
+                          className='w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm cursor-pointer'
                         >
                           <svg
                             className='w-4 h-4 mr-2'
