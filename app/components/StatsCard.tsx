@@ -23,10 +23,10 @@ export default function StatsCard({
   const [isVisible, setIsVisible] = useState(false);
 
   const colorClasses = {
-    purple: 'from-purple-500/20 to-purple-600/20 border-purple-400/30',
-    blue: 'from-blue-500/20 to-blue-600/20 border-blue-400/30',
-    green: 'from-green-500/20 to-green-600/20 border-green-400/30',
-    orange: 'from-orange-500/20 to-orange-600/20 border-orange-400/30',
+    purple: 'border-purple-500/30 bg-purple-500/5',
+    blue: 'border-blue-500/30 bg-blue-500/5',
+    green: 'border-green-500/30 bg-green-500/5',
+    orange: 'border-orange-500/30 bg-orange-500/5',
   };
 
   const iconColorClasses = {
@@ -80,35 +80,31 @@ export default function StatsCard({
   return (
     <div
       data-stats-card={title}
-      className={`backdrop-blur-xl bg-gradient-to-br ${
+      className={`border rounded-xl p-4 ${
         colorClasses[color]
-      } border rounded-2xl p-6 transition-all duration-700 transform ${
+      } transition-all duration-700 transform ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-      } ${className}`}
+      } ${className} relative group hover:scale-105`}
     >
-      <div className='flex items-center justify-between mb-4'>
-        <h3 className='text-lg font-semibold text-white'>{title}</h3>
-        {icon && (
-          <div
-            className={`w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center ${iconColorClasses[color]}`}
-          >
-            {icon}
-          </div>
-        )}
+      <div className='flex items-center justify-between mb-3'>
+        <h3 className='text-sm font-medium text-gray-300 uppercase tracking-wide'>
+          {title}
+        </h3>
+        {icon && <div className={iconColorClasses[color]}>{icon}</div>}
       </div>
 
-      <div className='space-y-2'>
-        <div className='text-3xl font-bold text-white'>
+      <div className='space-y-1'>
+        <div className='text-2xl font-semibold text-white'>
           {typeof animatedValue === 'number'
             ? animatedValue.toLocaleString()
             : animatedValue}
         </div>
-        {subtitle && <p className='text-sm text-gray-300'>{subtitle}</p>}
+        {subtitle && <p className='text-xs text-gray-400'>{subtitle}</p>}
       </div>
 
-      {/* Animated background glow */}
+      {/* Animated background glow on hover */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${colorClasses[color]} rounded-2xl opacity-0 transition-opacity duration-500 hover:opacity-20 pointer-events-none`}
+        className={`absolute inset-0 bg-gradient-to-br ${colorClasses[color]} rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-20 pointer-events-none`}
       />
     </div>
   );
