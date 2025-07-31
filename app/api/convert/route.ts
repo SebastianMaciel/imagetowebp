@@ -7,16 +7,13 @@ export async function POST(request: NextRequest) {
     const file = formData.get('image') as File;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No se proporcionó ningún archivo' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Verificar que sea un archivo PNG
     if (!file.type.includes('png')) {
       return NextResponse.json(
-        { error: 'El archivo debe ser un PNG' },
+        { error: 'File must be a PNG' },
         { status: 400 }
       );
     }
@@ -35,9 +32,9 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error al convertir la imagen:', error);
+    console.error('Error converting image:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

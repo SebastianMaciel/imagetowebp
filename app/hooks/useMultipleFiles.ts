@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react';
 interface FileWithMetadata {
   file: File;
   id: string;
-  previewUrl: string;
+  previewUrl: string | null;
   metadata: {
     width: number;
     height: number;
@@ -57,7 +57,7 @@ export function useMultipleFiles() {
           processFileMetadata(fileWithMeta);
         });
 
-        const message = `Has seleccionado ${validFiles.length} imágenes, pero solo podemos convertir hasta ${MAX_FILES} a la vez. Se agregaron las primeras ${filesToAdd.length} imágenes.`;
+        const message = `You selected ${validFiles.length} images, but we can only convert up to ${MAX_FILES} at a time. The first ${filesToAdd.length} images were added.`;
         return {
           success: false,
           message,
@@ -88,7 +88,9 @@ export function useMultipleFiles() {
 
       return {
         success: true,
-        message: `${validFiles.length} archivo(s) agregado(s)`,
+        message: `${validFiles.length} file${
+          validFiles.length === 1 ? '' : 's'
+        } added`,
       };
     },
     [files.length]
@@ -115,7 +117,7 @@ export function useMultipleFiles() {
       // Iniciar análisis de tamaño estimado
       estimateWebPSize(fileWithMeta.id, fileWithMeta.file);
     };
-    img.src = fileWithMeta.previewUrl;
+    img.src = fileWithMeta.previewUrl || ''; // Ensure src is not null
   }, []);
 
   const estimateWebPSize = useCallback(async (fileId: string, file: File) => {
@@ -133,7 +135,7 @@ export function useMultipleFiles() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al analizar la imagen');
+        throw new Error('Error analyzing image');
       }
 
       const blob = await response.blob();
@@ -156,7 +158,7 @@ export function useMultipleFiles() {
       setFiles((prev) =>
         prev.map((f) =>
           f.id === fileId
-            ? { ...f, error: 'Error al analizar la imagen', isAnalyzing: false }
+            ? { ...f, error: 'Error analyzing image', isAnalyzing: false }
             : f
         )
       );
@@ -185,7 +187,7 @@ export function useMultipleFiles() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Error al convertir la imagen');
+          throw new Error(errorData.error || 'Error converting image');
         }
 
         const blob = await response.blob();

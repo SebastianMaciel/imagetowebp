@@ -83,21 +83,18 @@ export default function Home() {
   const handleConvertAll = async () => {
     if (canConvertAll) {
       await convertAllFiles();
-      showToast(
-        'Todas las imágenes han sido convertidas exitosamente',
-        'success'
-      );
+      showToast('All images have been successfully converted', 'success');
     }
   };
 
   const handleDownloadAll = () => {
     downloadAll();
-    showToast('Descarga iniciada para todas las imágenes', 'success');
+    showToast('Download started for all images', 'success');
   };
 
   const handleClearAll = () => {
     clearAllFiles();
-    showToast('Todas las imágenes han sido eliminadas', 'info');
+    showToast('All images have been removed', 'info');
   };
 
   const getReductionPercentage = (
@@ -152,10 +149,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h1 className='text-2xl font-bold text-white'>PNG a WebP</h1>
-                <p className='text-sm text-gray-300'>
-                  Conversor inteligente de imágenes - Hasta 10 archivos
-                </p>
+                <h1 className='text-2xl font-bold text-white'>PNG to WebP</h1>
+                <p className='text-sm text-gray-300'>Smart image converter</p>
               </div>
             </div>
 
@@ -164,17 +159,17 @@ export default function Home() {
               <div className='flex items-center space-x-4'>
                 <div className='text-right'>
                   <p className='text-white font-semibold'>
-                    {files.length} archivo(s)
+                    {files.length} file{files.length === 1 ? '' : 's'}
                   </p>
                   <p className='text-sm text-gray-300'>
-                    {files.filter((f) => f.convertedUrl).length} convertido(s)
+                    {files.filter((f) => f.convertedUrl).length} converted
                   </p>
                 </div>
                 <button
                   onClick={handleClearAll}
                   className='px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300'
                 >
-                  Limpiar todo
+                  Clear all
                 </button>
               </div>
             )}
@@ -228,12 +223,12 @@ export default function Home() {
                     )}
                   </div>
                   <h3 className='text-2xl font-semibold text-white mb-2'>
-                    Sube tus imágenes PNG
+                    Upload your PNG images
                   </h3>
                   <p className='text-gray-300 mb-6'>
                     {isDragOver
-                      ? '¡Suelta aquí!'
-                      : 'Arrastra y suelta tus archivos PNG aquí, o haz clic para seleccionar (máximo 10 archivos)'}
+                      ? 'Drop here!'
+                      : 'Drag and drop your PNG files here, or click to select (max 10 files)'}
                   </p>
                   <label className='inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-lg'>
                     <svg
@@ -249,7 +244,7 @@ export default function Home() {
                         d='M12 6v6m0 0v6m0-6h6m-6 0H6'
                       />
                     </svg>
-                    Seleccionar archivos
+                    Select files
                     <input
                       type='file'
                       accept='.png,image/png'
@@ -271,11 +266,11 @@ export default function Home() {
                 <div className='flex flex-wrap items-center justify-between gap-4'>
                   <div className='flex items-center space-x-4'>
                     <h3 className='text-xl font-semibold text-white'>
-                      Acciones en lote
+                      Bulk actions
                     </h3>
                     <span className='text-sm text-gray-300'>
                       {files.filter((f) => !f.convertedUrl && !f.error).length}{' '}
-                      pendiente(s)
+                      pending
                     </span>
                   </div>
                   <div className='flex items-center space-x-3'>
@@ -307,7 +302,7 @@ export default function Home() {
                                 d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                               ></path>
                             </svg>
-                            Convirtiendo...
+                            Converting...
                           </>
                         ) : (
                           <>
@@ -324,7 +319,7 @@ export default function Home() {
                                 d='M13 10V3L4 14h7v7l9-11h-7z'
                               />
                             </svg>
-                            Convertir todo
+                            Convert all
                           </>
                         )}
                       </button>
@@ -347,7 +342,7 @@ export default function Home() {
                             d='M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
                           />
                         </svg>
-                        Descargar todo
+                        Download all
                       </button>
                     )}
                   </div>
@@ -369,7 +364,7 @@ export default function Home() {
                       <button
                         onClick={() => removeFile(fileWithMeta.id)}
                         className='flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300'
-                        title='Eliminar archivo'
+                        title='Remove file'
                       >
                         <svg
                           className='w-5 h-5'
@@ -417,7 +412,7 @@ export default function Home() {
                         <div className='relative group'>
                           <Image
                             src={fileWithMeta.previewUrl}
-                            alt={`Vista previa de ${fileWithMeta.file.name}`}
+                            alt={`Preview of ${fileWithMeta.file.name}`}
                             width={300}
                             height={200}
                             className='w-full h-auto rounded-xl max-h-40 object-contain shadow-lg group-hover:scale-105 transition-transform duration-300'
@@ -432,7 +427,7 @@ export default function Home() {
                         <div className='relative group'>
                           <Image
                             src={fileWithMeta.convertedUrl}
-                            alt={`Imagen convertida ${fileWithMeta.file.name}`}
+                            alt={`Converted image ${fileWithMeta.file.name}`}
                             width={300}
                             height={200}
                             className='w-full h-auto rounded-xl max-h-40 object-contain shadow-lg group-hover:scale-105 transition-transform duration-300'
@@ -448,15 +443,13 @@ export default function Home() {
                     {fileWithMeta.metadata && (
                       <div className='space-y-2'>
                         <div className='flex justify-between items-center text-sm'>
-                          <span className='text-gray-300'>
-                            Tamaño original:
-                          </span>
+                          <span className='text-gray-300'>Original size:</span>
                           <span className='font-medium text-white'>
                             {fileWithMeta.metadata.size}
                           </span>
                         </div>
                         <div className='flex justify-between items-center text-sm'>
-                          <span className='text-gray-300'>Dimensiones:</span>
+                          <span className='text-gray-300'>Dimensions:</span>
                           <span className='font-medium text-white'>
                             {fileWithMeta.metadata.width} ×{' '}
                             {fileWithMeta.metadata.height}px
@@ -467,7 +460,7 @@ export default function Home() {
                         {fileWithMeta.isAnalyzing && (
                           <div className='flex justify-between items-center text-sm'>
                             <span className='text-gray-300'>
-                              Tamaño estimado:
+                              Estimated size:
                             </span>
                             <div className='flex items-center'>
                               <svg
@@ -491,7 +484,7 @@ export default function Home() {
                                 ></path>
                               </svg>
                               <span className='text-blue-400 text-xs'>
-                                Analizando...
+                                Analyzing...
                               </span>
                             </div>
                           </div>
@@ -501,7 +494,7 @@ export default function Home() {
                           !fileWithMeta.convertedUrl && (
                             <div className='flex justify-between items-center text-sm'>
                               <span className='text-gray-300'>
-                                Tamaño estimado:
+                                Estimated size:
                               </span>
                               <div className='text-right'>
                                 <span className='font-medium text-green-400'>
@@ -512,7 +505,7 @@ export default function Home() {
                                     fileWithMeta.metadata.size,
                                     fileWithMeta.estimatedWebPSize
                                   )}{' '}
-                                  más pequeño
+                                  smaller
                                 </div>
                               </div>
                             </div>
@@ -521,7 +514,7 @@ export default function Home() {
                         {/* Converted size */}
                         {fileWithMeta.convertedSize && (
                           <div className='flex justify-between items-center text-sm'>
-                            <span className='text-gray-300'>Tamaño WebP:</span>
+                            <span className='text-gray-300'>WebP size:</span>
                             <div className='text-right'>
                               <span className='font-medium text-green-400'>
                                 {fileWithMeta.convertedSize}
@@ -531,7 +524,7 @@ export default function Home() {
                                   fileWithMeta.metadata.size,
                                   fileWithMeta.convertedSize
                                 )}{' '}
-                                más pequeño
+                                smaller
                               </div>
                             </div>
                           </div>
@@ -572,7 +565,7 @@ export default function Home() {
                                   d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                                 ></path>
                               </svg>
-                              Convirtiendo...
+                              Converting...
                             </>
                           ) : fileWithMeta.isAnalyzing ? (
                             <>
@@ -596,7 +589,7 @@ export default function Home() {
                                   d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                                 ></path>
                               </svg>
-                              Analizando...
+                              Analyzing...
                             </>
                           ) : (
                             <>
@@ -613,7 +606,7 @@ export default function Home() {
                                   d='M13 10V3L4 14h7v7l9-11h-7z'
                                 />
                               </svg>
-                              Convertir
+                              Convert
                             </>
                           )}
                         </button>
@@ -637,7 +630,7 @@ export default function Home() {
                               d='M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
                             />
                           </svg>
-                          Descargar
+                          Download
                         </button>
                       )}
                     </div>
@@ -664,12 +657,11 @@ export default function Home() {
                     </div>
                     <div className='text-center'>
                       <h4 className='text-lg font-semibold text-white mb-1'>
-                        Agregar más imágenes
+                        Add more images
                       </h4>
                       <p className='text-sm text-gray-300'>
-                        {10 - files.length} espacio
-                        {10 - files.length === 1 ? '' : 's'} disponible
-                        {10 - files.length === 1 ? '' : 's'}
+                        {10 - files.length} space
+                        {10 - files.length === 1 ? '' : 's'} available
                       </p>
                     </div>
                     <label className='inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-lg text-sm'>
@@ -686,7 +678,7 @@ export default function Home() {
                           d='M12 6v6m0 0v6m0-6h6m-6 0H6'
                         />
                       </svg>
-                      Seleccionar archivos
+                      Select files
                       <input
                         type='file'
                         accept='.png,image/png'
@@ -708,9 +700,9 @@ export default function Home() {
         <div className='w-full max-w-6xl mx-auto'>
           <div className='text-center'>
             <p className='text-gray-400 text-sm flex items-center justify-center space-x-2'>
-              <span>Hecho con</span>
+              <span>Made with</span>
               <span className='text-red-400 animate-pulse'>❤️</span>
-              <span>por</span>
+              <span>by</span>
               <a
                 href='https://github.com/sebastianmaciel'
                 target='_blank'
