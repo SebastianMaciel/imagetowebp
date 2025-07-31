@@ -149,7 +149,7 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h1 className='text-2xl font-bold text-white'>PNG to WebP</h1>
+                <h1 className='text-2xl font-bold text-white'>Image to WebP</h1>
                 <p className='text-sm text-gray-300'>Smart image converter</p>
               </div>
             </div>
@@ -223,12 +223,12 @@ export default function Home() {
                     )}
                   </div>
                   <h3 className='text-2xl font-semibold text-white mb-2'>
-                    Upload your PNG images
+                    Upload your images
                   </h3>
                   <p className='text-gray-300 mb-6'>
                     {isDragOver
                       ? 'Drop here!'
-                      : 'Drag and drop your PNG files here, or click to select (max 10 files)'}
+                      : 'Drag and drop your PNG, JPG, or JPEG files here, or click to select (max 10 files)'}
                   </p>
                   <label className='inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-lg'>
                     <svg
@@ -247,7 +247,7 @@ export default function Home() {
                     Select files
                     <input
                       type='file'
-                      accept='.png,image/png'
+                      accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
                       multiple
                       onChange={handleFileChange}
                       className='hidden'
@@ -681,7 +681,7 @@ export default function Home() {
                       Select files
                       <input
                         type='file'
-                        accept='.png,image/png'
+                        accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
                         multiple
                         onChange={handleFileChange}
                         className='hidden'

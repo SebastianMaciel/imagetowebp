@@ -10,10 +10,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Verificar que sea un archivo PNG
-    if (!file.type.includes('png')) {
+    // Verificar que sea un archivo de imagen válido (PNG, JPG, JPEG)
+    const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!validImageTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'File must be a PNG' },
+        { error: 'File must be a PNG, JPG, or JPEG image' },
         { status: 400 }
       );
     }

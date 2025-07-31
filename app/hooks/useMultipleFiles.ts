@@ -27,7 +27,10 @@ export function useMultipleFiles() {
 
   const addFiles = useCallback(
     (newFiles: File[]) => {
-      const validFiles = newFiles.filter((file) => file.type.includes('png'));
+      const validFiles = newFiles.filter((file) => {
+        const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        return validImageTypes.includes(file.type);
+      });
 
       if (files.length + validFiles.length > MAX_FILES) {
         // Calcular cuántos archivos podemos agregar
@@ -277,7 +280,12 @@ export function useMultipleFiles() {
       if (fileWithMeta?.convertedUrl) {
         const link = document.createElement('a');
         link.href = fileWithMeta.convertedUrl;
-        link.download = `${fileWithMeta.file.name.replace('.png', '')}.webp`;
+        // Remove any image extension and add .webp
+        const baseName = fileWithMeta.file.name.replace(
+          /\.(png|jpg|jpeg)$/i,
+          ''
+        );
+        link.download = `${baseName}.webp`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -291,7 +299,9 @@ export function useMultipleFiles() {
     convertedFiles.forEach((fileWithMeta) => {
       const link = document.createElement('a');
       link.href = fileWithMeta.convertedUrl!;
-      link.download = `${fileWithMeta.file.name.replace('.png', '')}.webp`;
+      // Remove any image extension and add .webp
+      const baseName = fileWithMeta.file.name.replace(/\.(png|jpg|jpeg)$/i, '');
+      link.download = `${baseName}.webp`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
