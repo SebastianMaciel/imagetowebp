@@ -55,17 +55,23 @@ export default function Home() {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (
+    e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+  ) => {
     e.preventDefault();
     setIsDragOver(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (
+    e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+  ) => {
     e.preventDefault();
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+  ) => {
     e.preventDefault();
     setIsDragOver(false);
 
@@ -179,60 +185,21 @@ export default function Home() {
         <div className='w-full max-w-6xl mx-auto flex-1 flex flex-col'>
           {/* File upload area */}
           {files.length === 0 && (
-            <div className='backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 flex-1 flex items-center justify-center'>
+            <label
+              className={`backdrop-blur-xl border-2 border-dashed rounded-3xl shadow-2xl p-8 flex-1 flex items-center justify-center transition-all duration-300 group cursor-pointer ${
+                isDragOver
+                  ? 'border-purple-400 bg-purple-500/10 scale-105'
+                  : 'bg-white/10 border-purple-400/50 hover:border-purple-400/70'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
               <div className='text-center'>
-                <div
-                  className={`border-2 border-dashed rounded-2xl p-12 transition-all duration-300 group ${
-                    isDragOver
-                      ? 'border-purple-400 bg-purple-500/10 scale-105'
-                      : 'border-purple-400/50 hover:border-purple-400/70'
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
-                  <div className='w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                    {isDragOver ? (
-                      <svg
-                        className='w-12 h-12 text-purple-400 animate-bounce'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className='w-12 h-12 text-purple-400'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <h3 className='text-2xl font-semibold text-white mb-2'>
-                    Upload your images
-                  </h3>
-                  <p className='text-gray-300 mb-6'>
-                    {isDragOver
-                      ? 'Drop here!'
-                      : 'Drag and drop your PNG, JPG, or JPEG files here, or click to select (max 10 files)'}
-                  </p>
-                  <label className='inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-lg'>
+                <div className='w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+                  {isDragOver ? (
                     <svg
-                      className='w-5 h-5 mr-2'
+                      className='w-12 h-12 text-purple-400 animate-bounce'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'
@@ -241,21 +208,58 @@ export default function Home() {
                         strokeLinecap='round'
                         strokeLinejoin='round'
                         strokeWidth={2}
-                        d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                        d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
                       />
                     </svg>
-                    Select files
-                    <input
-                      type='file'
-                      accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
-                      multiple
-                      onChange={handleFileChange}
-                      className='hidden'
-                    />
-                  </label>
+                  ) : (
+                    <svg
+                      className='w-12 h-12 text-purple-400'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
+                      />
+                    </svg>
+                  )}
                 </div>
+                <h3 className='text-2xl font-semibold text-white mb-2'>
+                  Upload your images
+                </h3>
+                <p className='text-gray-300 mb-6'>
+                  {isDragOver
+                    ? 'Drop here!'
+                    : 'Drag and drop your PNG, JPG, or JPEG files here, or click to select (max 10 files)'}
+                </p>
+                <div className='inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg'>
+                  <svg
+                    className='w-5 h-5 mr-2'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                    />
+                  </svg>
+                  Select files
+                </div>
+                <input
+                  type='file'
+                  accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
+                  multiple
+                  onChange={handleFileChange}
+                  className='hidden'
+                />
               </div>
-            </div>
+            </label>
           )}
 
           {/* Files list */}
@@ -358,9 +362,21 @@ export default function Home() {
                   >
                     {/* File header */}
                     <div className='flex items-center justify-between'>
-                      <h4 className='text-lg font-semibold text-white truncate flex-1'>
-                        {fileWithMeta.file.name}
-                      </h4>
+                      <div className='flex items-center space-x-3 flex-1 min-w-0'>
+                        {/* Format badge */}
+                        <div className='flex-shrink-0'>
+                          <span className='inline-flex items-center px-2 py-1 text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-lg'>
+                            {fileWithMeta.file.type.includes('png')
+                              ? 'PNG'
+                              : fileWithMeta.file.type.includes('jpeg')
+                              ? 'JPEG'
+                              : 'JPG'}
+                          </span>
+                        </div>
+                        <h4 className='text-lg font-semibold text-white truncate'>
+                          {fileWithMeta.file.name}
+                        </h4>
+                      </div>
                       <button
                         onClick={() => removeFile(fileWithMeta.id)}
                         className='flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300'
@@ -639,32 +655,60 @@ export default function Home() {
 
                 {/* Add more placeholder - only show when there are 1-9 files */}
                 {files.length > 0 && files.length < 10 && (
-                  <div className='backdrop-blur-xl bg-white/5 border border-white/10 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center space-y-4 hover:bg-white/10 transition-all duration-300 group cursor-pointer'>
+                  <label
+                    className={`backdrop-blur-xl border border-dashed rounded-2xl p-6 flex flex-col items-center justify-center space-y-4 transition-all duration-300 group cursor-pointer ${
+                      isDragOver
+                        ? 'bg-purple-500/20 border-purple-400 scale-105'
+                        : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
                     <div className='w-16 h-16 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
-                      <svg
-                        className='w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors duration-300'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M12 6v6m0 0v6m0-6h6m-6 0H6'
-                        />
-                      </svg>
+                      {isDragOver ? (
+                        <svg
+                          className='w-8 h-8 text-purple-400 animate-bounce'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className='w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors duration-300'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                          />
+                        </svg>
+                      )}
                     </div>
                     <div className='text-center'>
                       <h4 className='text-lg font-semibold text-white mb-1'>
-                        Add more images
+                        {isDragOver ? 'Drop here!' : 'Add more images'}
                       </h4>
                       <p className='text-sm text-gray-300'>
-                        {10 - files.length} space
-                        {10 - files.length === 1 ? '' : 's'} available
+                        {isDragOver
+                          ? 'Release to add images'
+                          : `${10 - files.length} space${
+                              10 - files.length === 1 ? '' : 's'
+                            } available`}
                       </p>
                     </div>
-                    <label className='inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 cursor-pointer shadow-lg text-sm'>
+                    <div className='inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm'>
                       <svg
                         className='w-4 h-4 mr-2'
                         fill='none'
@@ -679,15 +723,15 @@ export default function Home() {
                         />
                       </svg>
                       Select files
-                      <input
-                        type='file'
-                        accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
-                        multiple
-                        onChange={handleFileChange}
-                        className='hidden'
-                      />
-                    </label>
-                  </div>
+                    </div>
+                    <input
+                      type='file'
+                      accept='.png,.jpg,.jpeg,image/png,image/jpeg,image/jpg'
+                      multiple
+                      onChange={handleFileChange}
+                      className='hidden'
+                    />
+                  </label>
                 )}
               </div>
             </div>
