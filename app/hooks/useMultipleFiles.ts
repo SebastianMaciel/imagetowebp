@@ -294,7 +294,6 @@ export function useMultipleFiles() {
                   convertedUrl: url,
                   convertedSize,
                   isConverting: false,
-                  previewUrl: null, // Ocultar preview original
                 }
               : f
           )

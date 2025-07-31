@@ -2,7 +2,12 @@
 
 import Image from 'next/image';
 import React, { useState } from 'react';
-import Toast from './components/Toast';
+import CircularProgress from './components/CircularProgress';
+import EnhancedToast from './components/EnhancedToast';
+
+import ParticleSystem from './components/ParticleSystem';
+import StatsCard from './components/StatsCard';
+
 import { useMultipleFiles } from './hooks/useMultipleFiles';
 
 export default function Home() {
@@ -137,6 +142,9 @@ export default function Home() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden flex flex-col'>
+      {/* Particle System */}
+      <ParticleSystem />
+
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
 
@@ -169,26 +177,6 @@ export default function Home() {
                 <p className='text-sm text-gray-300'>Smart image converter</p>
               </div>
             </div>
-
-            {/* File count and actions */}
-            {files.length > 0 && (
-              <div className='flex items-center space-x-4'>
-                <div className='text-right'>
-                  <p className='text-white font-semibold'>
-                    {files.length} file{files.length === 1 ? '' : 's'}
-                  </p>
-                  <p className='text-sm text-gray-300'>
-                    {files.filter((f) => f.convertedUrl).length} converted
-                  </p>
-                </div>
-                <button
-                  onClick={handleClearAll}
-                  className='px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-300 cursor-pointer'
-                >
-                  Clear all
-                </button>
-              </div>
-            )}
           </div>
         </div>
 
@@ -275,6 +263,75 @@ export default function Home() {
           {/* Files list */}
           {files.length > 0 && (
             <div className='space-y-6'>
+              {/* Stats Cards */}
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+                <StatsCard
+                  title='Total Files'
+                  value={files.length}
+                  subtitle='Images uploaded'
+                  icon={
+                    <svg
+                      className='w-5 h-5'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+                      />
+                    </svg>
+                  }
+                  color='purple'
+                />
+                <StatsCard
+                  title='Converted'
+                  value={files.filter((f) => f.convertedUrl).length}
+                  subtitle='Successfully processed'
+                  icon={
+                    <svg
+                      className='w-5 h-5'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M5 13l4 4L19 7'
+                      />
+                    </svg>
+                  }
+                  color='green'
+                />
+                <StatsCard
+                  title='Pending'
+                  value={
+                    files.filter((f) => !f.convertedUrl && !f.error).length
+                  }
+                  subtitle='Awaiting conversion'
+                  icon={
+                    <svg
+                      className='w-5 h-5'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                      />
+                    </svg>
+                  }
+                  color='blue'
+                />
+              </div>
+
               {/* Bulk actions */}
               <div className='backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6'>
                 <div className='flex flex-wrap items-center justify-between gap-4'>
@@ -287,7 +344,7 @@ export default function Home() {
                       pending
                     </span>
                   </div>
-                  <div className='flex items-center space-x-3'>
+                  <div className='flex items-center flex-wrap gap-y-2 space-x-3'>
                     {canConvertAll && (
                       <button
                         onClick={handleConvertAll}
@@ -339,7 +396,7 @@ export default function Home() {
                       </button>
                     )}
                     {allConverted && (
-                      <div className='flex items-center space-x-3'>
+                      <div className='flex items-center flex-wrap gap-y-2 space-x-3'>
                         <button
                           onClick={handleDownloadAll}
                           className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer'
@@ -389,7 +446,7 @@ export default function Home() {
                 {files.map((fileWithMeta) => (
                   <div
                     key={fileWithMeta.id}
-                    className='backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 space-y-4'
+                    className='backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 space-y-4 overflow-hidden'
                   >
                     {/* File header */}
                     <div className='flex items-center justify-between'>
@@ -464,24 +521,23 @@ export default function Home() {
                             height={200}
                             className='w-full h-auto rounded-xl max-h-40 object-contain shadow-lg group-hover:scale-105 transition-transform duration-300'
                           />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Converted image */}
-                    {fileWithMeta.convertedUrl && (
-                      <div className='flex justify-center'>
-                        <div className='relative group'>
-                          <Image
-                            src={fileWithMeta.convertedUrl}
-                            alt={`Converted image ${fileWithMeta.file.name}`}
-                            width={300}
-                            height={200}
-                            className='w-full h-auto rounded-xl max-h-40 object-contain shadow-lg group-hover:scale-105 transition-transform duration-300'
-                          />
-                          <div className='absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full'>
-                            WebP
-                          </div>
+                          {/* Show conversion status badge */}
+                          {fileWithMeta.isConverting && (
+                            <div className='absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full animate-pulse'>
+                              Converting...
+                            </div>
+                          )}
+                          {fileWithMeta.isAnalyzing && (
+                            <div className='absolute top-2 right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full animate-pulse'>
+                              Analyzing...
+                            </div>
+                          )}
+                          {/* Show success badge when converted */}
+                          {fileWithMeta.convertedUrl && (
+                            <div className='absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full'>
+                              ✓ WebP
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -592,51 +648,22 @@ export default function Home() {
                         >
                           {fileWithMeta.isConverting ? (
                             <>
-                              <svg
-                                className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
-                                xmlns='http://www.w3.org/2000/svg'
-                                fill='none'
-                                viewBox='0 0 24 24'
-                              >
-                                <circle
-                                  className='opacity-25'
-                                  cx='12'
-                                  cy='12'
-                                  r='10'
-                                  stroke='currentColor'
-                                  strokeWidth='4'
-                                ></circle>
-                                <path
-                                  className='opacity-75'
-                                  fill='currentColor'
-                                  d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                                ></path>
-                              </svg>
-                              Converting...
+                              <CircularProgress
+                                progress={75}
+                                size={20}
+                                strokeWidth={2}
+                              />
+                              <span className='ml-2'>Converting...</span>
                             </>
                           ) : fileWithMeta.isAnalyzing ? (
                             <>
-                              <svg
-                                className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
-                                xmlns='http://www.w3.org/2000/svg'
-                                fill='none'
-                                viewBox='0 0 24 24'
-                              >
-                                <circle
-                                  className='opacity-25'
-                                  cx='12'
-                                  cy='12'
-                                  r='10'
-                                  stroke='currentColor'
-                                  strokeWidth='4'
-                                ></circle>
-                                <path
-                                  className='opacity-75'
-                                  fill='currentColor'
-                                  d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                                ></path>
-                              </svg>
-                              Analyzing...
+                              <CircularProgress
+                                progress={50}
+                                size={20}
+                                strokeWidth={2}
+                                color='#3b82f6'
+                              />
+                              <span className='ml-2'>Analyzing...</span>
                             </>
                           ) : (
                             <>
@@ -791,8 +818,8 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Toast notification */}
-      <Toast
+      {/* Enhanced Toast notification */}
+      <EnhancedToast
         message={toast.message}
         type={toast.type}
         isVisible={toast.isVisible}
