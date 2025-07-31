@@ -32,11 +32,11 @@ export default function Toast({
 
   const handleClose = () => {
     setIsExiting(true);
-    // Esperar a que termine la animación antes de llamar onClose
+    // Wait for the animation to finish before calling onClose
     setTimeout(() => {
       onClose();
       setIsExiting(false);
-    }, 300); // Duración de la animación de salida
+    }, 300); // Exit animation duration
   };
 
   if (!isVisible && !isExiting) return null;

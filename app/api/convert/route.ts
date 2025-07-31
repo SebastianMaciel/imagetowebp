@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar que sea un archivo de imagen válido (PNG, JPG, JPEG)
+    // Verify that it's a valid image file (PNG, JPG, JPEG)
     const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     if (!validImageTypes.includes(file.type)) {
       return NextResponse.json(
@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convertir el archivo a buffer
+    // Convert file to buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Convertir a WebP con calidad 80
+    // Convert to WebP with quality 80
     const webpBuffer = await sharp(buffer).webp({ quality: 80 }).toBuffer();
 
-    // Devolver el WebP como blob
+    // Return the WebP as blob
     return new NextResponse(webpBuffer, {
       headers: {
         'Content-Type': 'image/webp',

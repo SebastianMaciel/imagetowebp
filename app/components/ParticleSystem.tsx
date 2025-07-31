@@ -24,7 +24,7 @@ export default function ParticleSystem() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Configurar canvas
+    // Configure canvas
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -32,7 +32,7 @@ export default function ParticleSystem() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Crear partículas
+    // Create particles
     const createParticles = () => {
       const particles: Particle[] = [];
       const colors = ['#8b5cf6', '#3b82f6', '#06b6d4', '#10b981'];
@@ -53,20 +53,20 @@ export default function ParticleSystem() {
 
     particlesRef.current = createParticles();
 
-    // Función de animación
+    // Animation function
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((particle) => {
-        // Actualizar posición
+        // Update position
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Rebotar en los bordes
+        // Bounce off edges
         if (particle.x <= 0 || particle.x >= canvas.width) particle.vx *= -1;
         if (particle.y <= 0 || particle.y >= canvas.height) particle.vy *= -1;
 
-        // Dibujar partícula
+        // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle = `${particle.color}${Math.floor(particle.opacity * 255)
@@ -74,7 +74,7 @@ export default function ParticleSystem() {
           .padStart(2, '0')}`;
         ctx.fill();
 
-        // Conectar partículas cercanas
+        // Connect nearby particles
         particlesRef.current.forEach((otherParticle) => {
           const dx = particle.x - otherParticle.x;
           const dy = particle.y - otherParticle.y;

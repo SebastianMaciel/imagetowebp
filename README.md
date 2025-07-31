@@ -46,139 +46,139 @@ pnpm install
 pnpm dev
 ```
 
-4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## 🎯 Uso
+## 🎯 Usage
 
-1. **Sube tu imagen PNG**: Haz clic en el botón de selección de archivo
-2. **Selecciona un archivo PNG**: Solo se aceptan archivos PNG válidos
-3. **Revisa la vista previa**: Se mostrará una thumbnail de tu imagen con información detallada
-4. **Cambiar imagen**: Si quieres usar otra imagen, haz clic en el botón de eliminar (🗑️) y selecciona una nueva
-5. **Convierte**: Haz clic en "Convertir a WebP"
-6. **Revisa el resultado**: Ve la comparación de tamaños y la vista previa de la imagen WebP
-7. **Descarga o convierte otra**: Descarga tu imagen WebP o convierte otra imagen
+1. **Upload your PNG image**: Click on the file selection button
+2. **Select a PNG file**: Only valid PNG files are accepted
+3. **Review the preview**: A thumbnail of your image will be shown with detailed information
+4. **Change image**: If you want to use another image, click the delete button (🗑️) and select a new one
+5. **Convert**: Click "Convert to WebP"
+6. **Review the result**: See the size comparison and WebP image preview
+7. **Download or convert another**: Download your WebP image or convert another image
 
 ## 🔧 API
 
-La aplicación incluye una API REST en `/api/convert`:
+The application includes a REST API at `/api/convert`:
 
-- **Método**: POST
-- **Formato**: multipart/form-data
-- **Campo**: `image` (archivo PNG)
-- **Respuesta**: Archivo WebP con Content-Type: `image/webp`
+- **Method**: POST
+- **Format**: multipart/form-data
+- **Field**: `image` (PNG file)
+- **Response**: WebP file with Content-Type: `image/webp`
 
-### Ejemplo de uso de la API:
+### API usage example:
 
 ```bash
-curl -X POST -F "image=@tu-imagen.png" http://localhost:3000/api/convert -o convertida.webp
+curl -X POST -F "image=@your-image.png" http://localhost:3000/api/convert -o converted.webp
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 imgtowebp/
 ├── app/
 │   ├── api/
 │   │   └── convert/
-│   │       └── route.ts          # API para conversión
-│   ├── globals.css               # Estilos globales
-│   ├── layout.tsx                # Layout principal
-│   └── page.tsx                  # Página principal
-├── public/                       # Archivos estáticos
-├── package.json                  # Dependencias
-└── README.md                     # Documentación
+│   │       └── route.ts          # Conversion API
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Main layout
+│   └── page.tsx                  # Main page
+├── public/                       # Static files
+├── package.json                  # Dependencies
+└── README.md                     # Documentation
 ```
 
-## 🎨 Características de Diseño
+## 🎨 Design Features
 
-- **Modo oscuro por defecto**: Interfaz moderna y fácil para los ojos
-- **Diseño centrado**: Layout centrado con máximo ancho de 576px
-- **Espaciado generoso**: Paddings y márgenes amplios para mejor UX
-- **Transiciones suaves**: Animaciones moderadas para una experiencia fluida
-- **Responsive**: Adaptable a todos los tamaños de pantalla
+- **Dark mode by default**: Modern interface that's easy on the eyes
+- **Centered design**: Centered layout with maximum width of 576px
+- **Generous spacing**: Wide paddings and margins for better UX
+- **Smooth transitions**: Moderate animations for a fluid experience
+- **Responsive**: Adaptable to all screen sizes
 
-## 📊 Información de Metadata
+## 📊 Metadata Information
 
-La aplicación muestra información detallada de cada imagen PNG:
+The application shows detailed information for each PNG image:
 
-- **Nombre del archivo**: Nombre completo del archivo seleccionado
-- **Extensión**: Formato del archivo (PNG)
-- **Peso**: Tamaño del archivo en KB o MB (en negrita)
-- **Dimensiones**: Ancho y alto en píxeles
-- **Tamaño**: Resolución completa en formato "ancho × alto" (en negrita)
+- **File name**: Full name of the selected file
+- **Extension**: File format (PNG)
+- **Weight**: File size in KB or MB (in bold)
+- **Dimensions**: Width and height in pixels
+- **Size**: Complete resolution in "width × height" format (in bold)
 
-La metadata se muestra a la derecha de la vista previa en dispositivos medianos y grandes, y debajo en dispositivos móviles.
+The metadata is shown to the right of the preview on medium and large devices, and below on mobile devices.
 
-## 🧹 Interfaz Limpia
+## 🧹 Clean Interface
 
-La aplicación optimiza la experiencia visual ocultando elementos innecesarios:
+The application optimizes the visual experience by hiding unnecessary elements:
 
-- **Input condicional**: El campo de selección de archivo se oculta automáticamente después de la conversión
-- **Enfoque en resultados**: Una vez convertida la imagen, la interfaz se centra en mostrar el resultado
-- **Reducción de distracciones**: Elimina elementos que ya no son relevantes para el usuario
-- **Flujo visual claro**: Guía la atención del usuario hacia las acciones disponibles (descargar o convertir otra)
+- **Conditional input**: The file selection field is automatically hidden after conversion
+- **Focus on results**: Once the image is converted, the interface focuses on showing the result
+- **Reduced distractions**: Removes elements that are no longer relevant to the user
+- **Clear visual flow**: Guides the user's attention to available actions (download or convert another)
 
-## 🎯 Botones de Acción
+## 🎯 Action Buttons
 
-Después de la conversión, la aplicación presenta dos opciones claras:
+After conversion, the application presents two clear options:
 
-- **Descargar WebP**: Botón verde con icono de descarga para guardar la imagen convertida
-- **Convertir otra imagen**: Botón azul con icono de "+" para reiniciar el flujo completo
-- **Layout horizontal**: Ambos botones se muestran lado a lado con espaciado uniforme
-- **Reinicio completo**: Al hacer clic en "Convertir otra imagen" se limpian todos los estados
+- **Download WebP**: Green button with download icon to save the converted image
+- **Convert another image**: Blue button with "+" icon to restart the complete flow
+- **Horizontal layout**: Both buttons are shown side by side with uniform spacing
+- **Complete reset**: Clicking "Convert another image" clears all states
 
-## 📊 Comparación de Tamaños
+## 📊 Size Comparison
 
-Después de la conversión, la aplicación muestra una comparación visual prominente:
+After conversion, the application shows a prominent visual comparison:
 
-- **Tamaños grandes**: Los pesos se muestran en texto grande (text-3xl) para máxima visibilidad
-- **Layout centrado**: Diseño centrado con espaciado generoso entre elementos
-- **Etiquetas descriptivas**: "Archivo original" y "Archivo WebP" para claridad
-- **Flecha de transición**: Icono de flecha más grande (w-8 h-8) para mostrar la conversión
-- **Colores diferenciados**:
-  - Archivo original: Gris (text-gray-700)
-  - Archivo WebP: Verde (text-green-600) para destacar la optimización
-- **Cálculo automático**: Se calcula automáticamente en KB o MB según corresponda
+- **Large sizes**: Weights are shown in large text (text-3xl) for maximum visibility
+- **Centered layout**: Centered design with generous spacing between elements
+- **Descriptive labels**: "Original file" and "WebP file" for clarity
+- **Transition arrow**: Larger arrow icon (w-8 h-8) to show the conversion
+- **Differentiated colors**:
+  - Original file: Gray (text-gray-700)
+  - WebP file: Green (text-green-600) to highlight optimization
+- **Automatic calculation**: Automatically calculated in KB or MB as appropriate
 
-### 📈 Estadísticas de Reducción
+### 📈 Reduction Statistics
 
-Debajo de la comparación principal se muestran estadísticas detalladas:
+Below the main comparison, detailed statistics are shown:
 
-- **Porcentaje de reducción**: Calculado automáticamente y mostrado en verde
-  - **Formato inteligente**: Muestra al menos 1 dígito y hasta 2 decimales
-  - **Ejemplos**: "80.0%" para valores ≥ 10, "5.25%" para valores < 10
-- **Peso ahorrado**: Cantidad absoluta de espacio ahorrado (KB o MB)
-- **Separador visual**: Línea divisoria que separa la comparación de las estadísticas
-- **Texto más pequeño**: Estadísticas en `text-lg` para jerarquía visual
-- **Etiquetas descriptivas**: "Reducción" y "Ahorrado" para claridad
+- **Reduction percentage**: Automatically calculated and shown in green
+  - **Smart format**: Shows at least 1 digit and up to 2 decimals
+  - **Examples**: "80.0%" for values ≥ 10, "5.25%" for values < 10
+- **Weight saved**: Absolute amount of space saved (KB or MB)
+- **Visual separator**: Dividing line that separates the comparison from the statistics
+- **Smaller text**: Statistics in `text-lg` for visual hierarchy
+- **Descriptive labels**: "Reduction" and "Saved" for clarity
 
-## 📁 Gestión de Archivos
+## 📁 File Management
 
-La aplicación incluye una gestión inteligente de archivos:
+The application includes intelligent file management:
 
-- **Input condicional**: El campo de selección de archivo se oculta automáticamente cuando hay una imagen seleccionada
-- **Indicador visual**: Cuando hay un archivo seleccionado, se muestra un indicador con:
-  - Icono de imagen
-  - Nombre del archivo
-  - Tipo de archivo (PNG)
-- **Botón de eliminar**: Icono de papelera (🗑️) para eliminar la imagen actual
-- **Reinicio completo**: Al eliminar, se limpian todos los estados (preview, metadata, resultado)
-- **Nueva selección**: Después de eliminar, el input de archivo vuelve a aparecer
-- **Botón condicional**: El botón "Convertir a WebP" solo aparece cuando hay un archivo seleccionado
+- **Conditional input**: The file selection field is automatically hidden when there's a selected image
+- **Visual indicator**: When there's a selected file, an indicator is shown with:
+  - Image icon
+  - File name
+  - File type (PNG)
+- **Delete button**: Trash icon (🗑️) to remove the current image
+- **Complete reset**: When deleting, all states are cleared (preview, metadata, result)
+- **New selection**: After deleting, the file input appears again
+- **Conditional button**: The "Convert to WebP" button only appears when there's a selected file
 
-## 🚀 Despliegue
+## 🚀 Deployment
 
-La aplicación está lista para desplegar en Vercel, Netlify o cualquier plataforma que soporte Next.js:
+The application is ready to deploy on Vercel, Netlify or any platform that supports Next.js:
 
 ```bash
 pnpm build
 pnpm start
 ```
 
-## 📝 Licencia
+## 📝 License
 
-MIT License - Libre para uso personal y comercial.
+MIT License - Free for personal and commercial use.
 
-## 🤝 Contribuciones
+## 🤝 Contributions
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerencias y mejoras.
+Contributions are welcome. Please open an issue or pull request for suggestions and improvements.

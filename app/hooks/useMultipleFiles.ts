@@ -103,7 +103,7 @@ export function useMultipleFiles() {
 
         setFiles((prev) => [...prev, ...filesWithMetadata]);
 
-        // Procesar metadata y estimación de tamaño para cada archivo
+        // Process metadata and size estimation for each file
         filesWithMetadata.forEach((fileWithMeta) => {
           processFileMetadata(fileWithMeta);
         });
@@ -118,7 +118,7 @@ export function useMultipleFiles() {
       }
 
       if (files.length + validFiles.length > MAX_FILES) {
-        // Calcular cuántos archivos podemos agregar
+        // Calculate how many files we can add
         const availableSlots = MAX_FILES - files.length;
         const filesToAdd = validFiles.slice(0, availableSlots);
         const excessCount = validFiles.length - availableSlots;
@@ -140,7 +140,7 @@ export function useMultipleFiles() {
 
         setFiles((prev) => [...prev, ...filesWithMetadata]);
 
-        // Procesar metadata y estimación de tamaño para cada archivo
+        // Process metadata and size estimation for each file
         filesWithMetadata.forEach((fileWithMeta) => {
           processFileMetadata(fileWithMeta);
         });
@@ -169,7 +169,7 @@ export function useMultipleFiles() {
 
       setFiles((prev) => [...prev, ...filesWithMetadata]);
 
-      // Procesar metadata y estimación de tamaño para cada archivo
+      // Process metadata and size estimation for each file
       filesWithMetadata.forEach((fileWithMeta) => {
         processFileMetadata(fileWithMeta);
       });
@@ -202,7 +202,7 @@ export function useMultipleFiles() {
         )
       );
 
-      // Iniciar análisis de tamaño estimado
+      // Start estimated size analysis
       estimateWebPSize(fileWithMeta.id, fileWithMeta.file);
     };
     img.src = fileWithMeta.previewUrl || ''; // Ensure src is not null
@@ -240,7 +240,7 @@ export function useMultipleFiles() {
         )
       );
 
-      // Limpiar el blob
+      // Clean up the blob
       URL.revokeObjectURL(URL.createObjectURL(blob));
     } catch (error) {
       setFiles((prev) =>
@@ -305,9 +305,7 @@ export function useMultipleFiles() {
               ? {
                   ...f,
                   error:
-                    error instanceof Error
-                      ? error.message
-                      : 'Error desconocido',
+                    error instanceof Error ? error.message : 'Unknown error',
                   isConverting: false,
                 }
               : f
@@ -334,7 +332,7 @@ export function useMultipleFiles() {
     setFiles((prev) => {
       const fileToRemove = prev.find((f) => f.id === fileId);
       if (fileToRemove) {
-        // Limpiar URLs
+        // Clean up URLs
         if (fileToRemove.previewUrl) {
           URL.revokeObjectURL(fileToRemove.previewUrl);
         }
