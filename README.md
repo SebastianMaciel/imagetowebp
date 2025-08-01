@@ -29,20 +29,20 @@ A modern web tool to convert PNG, JPG, and JPEG images to WebP format with intel
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/SebastianMaciel/imagetowebp.git
 cd imgtowebp
 ```
 
 2. Install the dependencies:
 
 ```bash
-pnpm install
+pnpm install # or npm install
 ```
 
 3. Run the development server:
 
 ```bash
-pnpm dev
+pnpm dev # or npm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -193,8 +193,8 @@ The application includes intelligent file management:
 The application is ready to deploy on Vercel, Netlify or any platform that supports Next.js:
 
 ```bash
-pnpm build
-pnpm start
+pnpm build # or npm run build
+pnpm start # or npm run start
 ```
 
 ## 📝 License
