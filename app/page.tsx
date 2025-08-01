@@ -17,14 +17,12 @@ export default function Home() {
     convertFile,
     convertAllFiles,
     removeFile,
-    clearAllFiles,
+
     downloadFile,
     downloadAll,
-    downloadAllAsZip,
     isConvertingAll,
     canConvertAll,
     allConverted,
-    hasErrors,
   } = useMultipleFiles();
 
   const [isDragOver, setIsDragOver] = useState(false);
@@ -102,20 +100,6 @@ export default function Home() {
   const handleDownloadAll = () => {
     downloadAll();
     showToast('Download started for all images', 'success');
-  };
-
-  const handleDownloadAllAsZip = async () => {
-    try {
-      await downloadAllAsZip();
-      showToast('ZIP download started successfully', 'success');
-    } catch (error) {
-      showToast('Failed to create ZIP file', 'error');
-    }
-  };
-
-  const handleClearAll = () => {
-    clearAllFiles();
-    showToast('All images have been removed', 'info');
   };
 
   const getReductionPercentage = (
@@ -415,25 +399,6 @@ export default function Home() {
                             />
                           </svg>
                           Download all
-                        </button>
-                        <button
-                          onClick={handleDownloadAllAsZip}
-                          className='inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer'
-                        >
-                          <svg
-                            className='w-5 h-5 mr-2'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                              d='M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z'
-                            />
-                          </svg>
-                          Download as ZIP
                         </button>
                       </div>
                     )}

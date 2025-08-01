@@ -73,7 +73,7 @@ export default function StatsCard({
 
       return () => clearInterval(timer);
     } else if (isVisible) {
-      setAnimatedValue(value);
+      setAnimatedValue(Number(value));
     }
   }, [isVisible, value]);
 

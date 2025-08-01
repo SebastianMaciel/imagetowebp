@@ -28,6 +28,81 @@ export function useMultipleFiles() {
   const [files, setFiles] = useState<FileWithMetadata[]>([]);
   const [isConvertingAll, setIsConvertingAll] = useState(false);
 
+  const estimateWebPSize = useCallback(async (fileId: string, file: File) => {
+    setFiles((prev) =>
+      prev.map((f) => (f.id === fileId ? { ...f, isAnalyzing: true } : f))
+    );
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/convert', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Error analyzing image');
+      }
+
+      const blob = await response.blob();
+      const sizeInKB = (blob.size / 1024).toFixed(1);
+      const sizeInMB = (blob.size / (1024 * 1024)).toFixed(2);
+      const convertedSize =
+        blob.size > 1024 * 1024 ? `${sizeInMB} MB` : `${sizeInKB} KB`;
+
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileId
+            ? { ...f, estimatedWebPSize: convertedSize, isAnalyzing: false }
+            : f
+        )
+      );
+
+      // Clean up the blob
+      URL.revokeObjectURL(URL.createObjectURL(blob));
+    } catch {
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileId
+            ? { ...f, error: 'Error analyzing image', isAnalyzing: false }
+            : f
+        )
+      );
+    }
+  }, []);
+
+  const processFileMetadata = useCallback(
+    (fileWithMeta: FileWithMetadata) => {
+      const img = document.createElement('img');
+      img.onload = () => {
+        const sizeInKB = (fileWithMeta.file.size / 1024).toFixed(1);
+        const sizeInMB = (fileWithMeta.file.size / (1024 * 1024)).toFixed(2);
+        const size =
+          fileWithMeta.file.size > 1024 * 1024
+            ? `${sizeInMB} MB`
+            : `${sizeInKB} KB`;
+
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === fileWithMeta.id
+              ? {
+                  ...f,
+                  metadata: { width: img.width, height: img.height, size },
+                }
+              : f
+          )
+        );
+
+        // Start estimated size analysis
+        estimateWebPSize(fileWithMeta.id, fileWithMeta.file);
+      };
+      img.src = fileWithMeta.previewUrl || ''; // Ensure src is not null
+    },
+    [estimateWebPSize]
+  );
+
   const addFiles = useCallback(
     (newFiles: File[]) => {
       // Filter valid image types and check file sizes
@@ -181,77 +256,8 @@ export function useMultipleFiles() {
         } added`,
       };
     },
-    [files.length]
+    [files, processFileMetadata]
   );
-
-  const processFileMetadata = useCallback((fileWithMeta: FileWithMetadata) => {
-    const img = document.createElement('img');
-    img.onload = () => {
-      const sizeInKB = (fileWithMeta.file.size / 1024).toFixed(1);
-      const sizeInMB = (fileWithMeta.file.size / (1024 * 1024)).toFixed(2);
-      const size =
-        fileWithMeta.file.size > 1024 * 1024
-          ? `${sizeInMB} MB`
-          : `${sizeInKB} KB`;
-
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileWithMeta.id
-            ? { ...f, metadata: { width: img.width, height: img.height, size } }
-            : f
-        )
-      );
-
-      // Start estimated size analysis
-      estimateWebPSize(fileWithMeta.id, fileWithMeta.file);
-    };
-    img.src = fileWithMeta.previewUrl || ''; // Ensure src is not null
-  }, []);
-
-  const estimateWebPSize = useCallback(async (fileId: string, file: File) => {
-    setFiles((prev) =>
-      prev.map((f) => (f.id === fileId ? { ...f, isAnalyzing: true } : f))
-    );
-
-    try {
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const response = await fetch('/api/convert', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Error analyzing image');
-      }
-
-      const blob = await response.blob();
-      const sizeInKB = (blob.size / 1024).toFixed(1);
-      const sizeInMB = (blob.size / (1024 * 1024)).toFixed(2);
-      const convertedSize =
-        blob.size > 1024 * 1024 ? `${sizeInMB} MB` : `${sizeInKB} KB`;
-
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileId
-            ? { ...f, estimatedWebPSize: convertedSize, isAnalyzing: false }
-            : f
-        )
-      );
-
-      // Clean up the blob
-      URL.revokeObjectURL(URL.createObjectURL(blob));
-    } catch (error) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileId
-            ? { ...f, error: 'Error analyzing image', isAnalyzing: false }
-            : f
-        )
-      );
-    }
-  }, []);
 
   const convertFile = useCallback(
     async (fileId: string) => {
@@ -390,58 +396,6 @@ export function useMultipleFiles() {
     });
   }, [files]);
 
-  const downloadAllAsZip = useCallback(async () => {
-    const convertedFiles = files.filter((f) => f.convertedUrl);
-    if (convertedFiles.length === 0) return;
-
-    try {
-      // Prepare file data for the API
-      const filesData = convertedFiles.map((fileWithMeta) => {
-        const baseName = fileWithMeta.file.name.replace(
-          /\.(png|jpg|jpeg)$/i,
-          ''
-        );
-        const fileName = `${baseName}.webp`;
-
-        return {
-          name: fileName,
-          url: fileWithMeta.convertedUrl!,
-        };
-      });
-
-      // Call the API to create and download the ZIP
-      const response = await fetch('/api/download-zip', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ files: filesData }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create ZIP file');
-      }
-
-      // Get the ZIP blob and download it
-      const zipBlob = await response.blob();
-      const url = URL.createObjectURL(zipBlob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'converted-images.zip';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Clean up the URL
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error creating ZIP file:', error);
-      throw new Error('Failed to create ZIP file');
-    }
-  }, [files]);
-
   return {
     files,
     addFiles,
@@ -451,7 +405,6 @@ export function useMultipleFiles() {
     clearAllFiles,
     downloadFile,
     downloadAll,
-    downloadAllAsZip,
     isConvertingAll,
     canConvertAll: files.some(
       (f) => !f.convertedUrl && !f.error && !f.isAnalyzing

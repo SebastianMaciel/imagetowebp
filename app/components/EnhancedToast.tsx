@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface EnhancedToastProps {
   message: string;
@@ -19,6 +19,14 @@ export default function EnhancedToast({
 }: EnhancedToastProps) {
   const [isExiting, setIsExiting] = useState(false);
   const [progress, setProgress] = useState(100);
+
+  const handleClose = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onClose();
+      setIsExiting(false);
+    }, 300);
+  }, [onClose]);
 
   useEffect(() => {
     if (isVisible) {
@@ -45,15 +53,7 @@ export default function EnhancedToast({
         clearInterval(progressInterval);
       };
     }
-  }, [isVisible, duration]);
-
-  const handleClose = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      onClose();
-      setIsExiting(false);
-    }, 300);
-  };
+  }, [isVisible, duration, handleClose]);
 
   if (!isVisible && !isExiting) return null;
 

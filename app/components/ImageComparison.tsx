@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface ImageComparisonProps {
   originalSrc: string;
@@ -26,31 +26,46 @@ export default function ImageComparison({
     setIsDragging(true);
   };
 
-  const handleMouseMove = (e: React.MouseEvent | MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!isDragging || !containerRef.current) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = (x / rect.width) * 100;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percentage = (x / rect.width) * 100;
 
-    setSliderPosition(Math.max(0, Math.min(100, percentage)));
-  };
+      setSliderPosition(Math.max(0, Math.min(100, percentage)));
+    },
+    [isDragging]
+  );
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      const handleDocumentMouseMove = (e: MouseEvent) => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = (x / rect.width) * 100;
+        setSliderPosition(Math.max(0, Math.min(100, percentage)));
+      };
+
+      const handleDocumentMouseUp = () => {
+        setIsDragging(false);
+      };
+
+      document.addEventListener('mousemove', handleDocumentMouseMove);
+      document.addEventListener('mouseup', handleDocumentMouseUp);
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mousemove', handleDocumentMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   return (
     <div

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ToastProps {
   message: string;
@@ -19,6 +19,15 @@ export default function Toast({
 }: ToastProps) {
   const [isExiting, setIsExiting] = useState(false);
 
+  const handleClose = useCallback(() => {
+    setIsExiting(true);
+    // Wait for the animation to finish before calling onClose
+    setTimeout(() => {
+      onClose();
+      setIsExiting(false);
+    }, 300); // Exit animation duration
+  }, [onClose]);
+
   useEffect(() => {
     if (isVisible) {
       setIsExiting(false);
@@ -28,16 +37,7 @@ export default function Toast({
 
       return () => clearTimeout(timer);
     }
-  }, [isVisible, duration]);
-
-  const handleClose = () => {
-    setIsExiting(true);
-    // Wait for the animation to finish before calling onClose
-    setTimeout(() => {
-      onClose();
-      setIsExiting(false);
-    }, 300); // Exit animation duration
-  };
+  }, [isVisible, duration, handleClose]);
 
   if (!isVisible && !isExiting) return null;
 
