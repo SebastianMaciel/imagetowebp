@@ -17,10 +17,10 @@ export default function Home() {
     convertFile,
     convertAllFiles,
     removeFile,
-
     downloadFile,
     downloadAll,
     isConvertingAll,
+    isProcessingFiles,
     canConvertAll,
     allConverted,
   } = useMultipleFiles();
@@ -47,14 +47,18 @@ export default function Home() {
     setToast((prev) => ({ ...prev, isVisible: false }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length > 0) {
-      const result = addFiles(selectedFiles);
-      if (!result.success) {
-        showToast(result.message, 'warning');
-      } else {
-        showToast(result.message, 'success');
+      try {
+        const result = await addFiles(selectedFiles);
+        if (!result.success) {
+          showToast(result.message, 'warning');
+        } else {
+          showToast(result.message, 'success');
+        }
+      } catch (error) {
+        showToast('Error processing files. Please try again.', 'error');
       }
     }
   };
@@ -73,7 +77,7 @@ export default function Home() {
     setIsDragOver(false);
   };
 
-  const handleDrop = (
+  const handleDrop = async (
     e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
   ) => {
     e.preventDefault();
@@ -81,11 +85,15 @@ export default function Home() {
 
     const droppedFiles = Array.from(e.dataTransfer.files);
     if (droppedFiles.length > 0) {
-      const result = addFiles(droppedFiles);
-      if (!result.success) {
-        showToast(result.message, 'warning');
-      } else {
-        showToast(result.message, 'success');
+      try {
+        const result = await addFiles(droppedFiles);
+        if (!result.success) {
+          showToast(result.message, 'warning');
+        } else {
+          showToast(result.message, 'success');
+        }
+      } catch (error) {
+        showToast('Error processing files. Please try again.', 'error');
       }
     }
   };
@@ -166,7 +174,7 @@ export default function Home() {
 
         <div className='w-full max-w-6xl mx-auto flex-1 flex flex-col'>
           {/* File upload area */}
-          {files.length === 0 && (
+          {files.length === 0 && !isProcessingFiles && (
             <label
               className={`backdrop-blur-xl border-2 border-dashed rounded-3xl shadow-2xl p-8 flex-1 flex items-center justify-center transition-all duration-300 group cursor-pointer ${
                 isDragOver
@@ -242,6 +250,42 @@ export default function Home() {
                 />
               </div>
             </label>
+          )}
+
+          {/* Processing indicator */}
+          {isProcessingFiles && files.length === 0 && (
+            <div className='backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-12 flex-1 flex items-center justify-center'>
+              <div className='text-center'>
+                <div className='w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center'>
+                  <svg
+                    className='animate-spin w-12 h-12 text-purple-400'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                  >
+                    <circle
+                      className='opacity-25'
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='currentColor'
+                      strokeWidth='4'
+                    ></circle>
+                    <path
+                      className='opacity-75'
+                      fill='currentColor'
+                      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                    ></path>
+                  </svg>
+                </div>
+                <h3 className='text-2xl font-semibold text-white mb-2'>
+                  Processing images...
+                </h3>
+                <p className='text-gray-300'>
+                  Compressing and analyzing your files
+                </p>
+              </div>
+            </div>
           )}
 
           {/* Files list */}

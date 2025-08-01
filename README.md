@@ -1,16 +1,20 @@
-# PNG to WebP - Image Converter
+# Image to WebP - Smart Image Converter
 
-A simple and modern web tool to convert PNG images to WebP format with a single click.
+A modern web tool to convert PNG, JPG, and JPEG images to WebP format with intelligent compression and batch processing.
 
 ## 🚀 Features
 
-- **Quick conversion**: Converts PNG to WebP with optimized quality (80%)
-- **Preview**: Shows a thumbnail of the PNG image before converting
-- **Size comparison**: Shows the size reduction after conversion
-- **Dual action buttons**: Download and option to convert another image
-- **Modern interface**: Minimalist design with dark mode by default
-- **Local processing**: All processing occurs on the server, without external dependencies
-- **Responsive**: Works perfectly on mobile and desktop devices
+- **Multi-format support**: Converts PNG, JPG, and JPEG to WebP with optimized quality (80%)
+- **Batch processing**: Upload and convert up to 10 images simultaneously
+- **Smart compression**: Automatically compresses large images before upload to prevent server errors
+- **Size estimation**: Shows estimated WebP size before conversion
+- **Size comparison**: Displays size reduction percentage after conversion
+- **Drag & drop**: Intuitive drag and drop interface for easy file upload
+- **Bulk actions**: Convert all images at once or download all converted files
+- **Real-time stats**: Live statistics showing total files, converted count, and pending items
+- **Error handling**: Comprehensive error handling with user-friendly messages
+- **Modern interface**: Beautiful dark theme with particle effects and smooth animations
+- **Responsive design**: Works perfectly on mobile and desktop devices
 
 ## 🛠️ Technologies
 
@@ -44,13 +48,19 @@ pnpm dev
 
 ## 🎯 Usage
 
-1. **Upload your PNG image**: Click on the file selection button
-2. **Select a PNG file**: Only valid PNG files are accepted
-3. **Review the preview**: A thumbnail of your image will be shown with detailed information
-4. **Change image**: If you want to use another image, click the delete button (🗑️) and select a new one
-5. **Convert**: Click "Convert to WebP"
-6. **Review the result**: See the size comparison and WebP image preview
-7. **Download or convert another**: Download your WebP image or convert another image
+1. **Upload images**: Drag and drop or click to select PNG, JPG, or JPEG files (up to 10 files, 20MB each)
+2. **Review previews**: Thumbnails and metadata for each image are displayed
+3. **Monitor progress**: Watch real-time analysis and size estimation
+4. **Convert individually or in bulk**: Convert files one by one or use "Convert all" for batch processing
+5. **Download results**: Download individual files or all converted WebP images at once
+6. **Smart compression**: Large images are automatically compressed to prevent upload errors
+
+### File Size Limits
+
+- **Individual files**: Up to 20MB per image
+- **Total upload**: Up to 100MB total
+- **Batch processing**: Up to 10 images simultaneously
+- **Auto-compression**: Images larger than 5MB are automatically compressed
 
 ## 🔧 API
 
@@ -58,14 +68,24 @@ The application includes a REST API at `/api/convert`:
 
 - **Method**: POST
 - **Format**: multipart/form-data
-- **Field**: `image` (PNG file)
+- **Field**: `image` (PNG, JPG, or JPEG file)
 - **Response**: WebP file with Content-Type: `image/webp`
+- **File size limit**: 20MB per request
+- **Timeout**: 60 seconds
 
 ### API usage example:
 
 ```bash
 curl -X POST -F "image=@your-image.png" http://localhost:3000/api/convert -o converted.webp
 ```
+
+### Error Handling
+
+The API provides specific error messages for different scenarios:
+
+- **413**: File too large (exceeds 20MB limit)
+- **400**: Invalid file format or file too small
+- **500**: Server processing error
 
 ## 📁 Project Structure
 
@@ -75,6 +95,13 @@ imgtowebp/
 │   ├── api/
 │   │   └── convert/
 │   │       └── route.ts          # Conversion API
+│   ├── components/
+│   │   ├── CircularProgress.tsx  # Progress indicators
+│   │   ├── EnhancedToast.tsx     # Toast notifications
+│   │   ├── ParticleSystem.tsx    # Background effects
+│   │   └── StatsCard.tsx         # Statistics cards
+│   ├── hooks/
+│   │   └── useMultipleFiles.ts   # File management hook
 │   ├── globals.css               # Global styles
 │   ├── layout.tsx                # Main layout
 │   └── page.tsx                  # Main page

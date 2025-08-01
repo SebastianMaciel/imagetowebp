@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 
+// Set maximum file size for this route
+export const maxDuration = 60; // 60 seconds timeout
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -11,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // File size limits
-    const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15 MB
+    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
     const MIN_FILE_SIZE = 1024; // 1 KB
 
     if (file.size < MIN_FILE_SIZE) {
@@ -58,8 +62,25 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error converting image:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('Input buffer contains unsupported image format')) {
+        return NextResponse.json(
+          { error: 'Unsupported image format. Please use PNG, JPG, or JPEG.' },
+          { status: 400 }
+        );
+      }
+      if (error.message.includes('memory')) {
+        return NextResponse.json(
+          { error: 'Image is too large to process. Please try a smaller image.' },
+          { status: 413 }
+        );
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to convert image. Please try again.' },
       { status: 500 }
     );
   }
