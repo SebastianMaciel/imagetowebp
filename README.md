@@ -7,6 +7,7 @@ A modern web tool to convert PNG, JPG, and JPEG images to WebP format with intel
 - **Multi-format support**: Converts PNG, JPG, and JPEG to WebP with optimized quality (80%)
 - **Batch processing**: Upload and convert up to 10 images simultaneously
 - **Smart compression**: Automatically compresses large images before upload to prevent server errors
+- **Vercel optimized**: Configured for reliable deployment on Vercel with appropriate file size limits
 - **Size estimation**: Shows estimated WebP size before conversion
 - **Size comparison**: Displays size reduction percentage after conversion
 - **Drag & drop**: Intuitive drag and drop interface for easy file upload
@@ -57,10 +58,10 @@ pnpm dev
 
 ### File Size Limits
 
-- **Individual files**: Up to 20MB per image
-- **Total upload**: Up to 100MB total
+- **Individual files**: Up to 4MB per image (optimized for Vercel deployment)
+- **Total upload**: Up to 40MB total
 - **Batch processing**: Up to 10 images simultaneously
-- **Auto-compression**: Images larger than 5MB are automatically compressed
+- **Auto-compression**: Images larger than 2MB are automatically compressed
 
 ## 🔧 API
 
@@ -70,7 +71,7 @@ The application includes a REST API at `/api/convert`:
 - **Format**: multipart/form-data
 - **Field**: `image` (PNG, JPG, or JPEG file)
 - **Response**: WebP file with Content-Type: `image/webp`
-- **File size limit**: 20MB per request
+- **File size limit**: 4MB per request (optimized for Vercel)
 - **Timeout**: 60 seconds
 
 ### API usage example:
@@ -83,7 +84,7 @@ curl -X POST -F "image=@your-image.png" http://localhost:3000/api/convert -o con
 
 The API provides specific error messages for different scenarios:
 
-- **413**: File too large (exceeds 20MB limit)
+- **413**: File too large (exceeds 4MB limit)
 - **400**: Invalid file format or file too small
 - **500**: Server processing error
 

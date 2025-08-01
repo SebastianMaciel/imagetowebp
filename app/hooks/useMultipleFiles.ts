@@ -20,15 +20,15 @@ interface FileWithMetadata {
 }
 
 const MAX_FILES = 10;
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB (safe for Vercel)
 const MIN_FILE_SIZE = 1024; // 1 KB
-const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100 MB
+const MAX_TOTAL_SIZE = 40 * 1024 * 1024; // 40 MB total
 
 // Client-side image compression function
 const compressImage = (
   file: File,
-  maxWidth = 1920,
-  quality = 0.8
+  maxWidth = 1600,
+  quality = 0.7
 ): Promise<File> => {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
@@ -182,8 +182,8 @@ export function useMultipleFiles() {
         const processedFiles: File[] = [];
         for (const file of validFiles) {
           try {
-            if (file.size > 5 * 1024 * 1024) {
-              // Compress files larger than 5MB
+            if (file.size > 2 * 1024 * 1024) {
+              // Compress files larger than 2MB to ensure they fit within Vercel limits
               console.log(
                 `Compressing ${file.name} (${(file.size / 1024 / 1024).toFixed(
                   2

@@ -58,6 +58,7 @@ export default function Home() {
           showToast(result.message, 'success');
         }
       } catch (error) {
+        console.error(error);
         showToast('Error processing files. Please try again.', 'error');
       }
     }
@@ -93,6 +94,7 @@ export default function Home() {
           showToast(result.message, 'success');
         }
       } catch (error) {
+        console.error(error);
         showToast('Error processing files. Please try again.', 'error');
       }
     }
