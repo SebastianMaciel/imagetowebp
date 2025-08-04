@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'PNG a WebP - Convertidor de Imágenes',
-  description: 'Convierte tus imágenes PNG a formato WebP con un solo clic',
+  title: 'Image to WebP - Image Converter',
+  description: 'Convert your images to WebP format with a single click',
 };
 
 export default function RootLayout({
